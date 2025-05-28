@@ -64,7 +64,7 @@ class GoogleLoginController extends Controller
                     'password' => bcrypt('my-password'),
                     'token' => $user->token,
                     'refresh_token' => $user->refreshToken ?? null,
-                    'expires_in' => $user->expiresIn ?? null,
+                    'expires_in' => now()->addSeconds($user->expiresIn)  ?? null,
 
                 ]);
                 Auth::login($newUser);

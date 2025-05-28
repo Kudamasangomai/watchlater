@@ -15,7 +15,7 @@ class ReminderController extends Controller
      */
     public function index()
     {
-         $reminders = Reminder::where('user_id', Auth::id())->orderByDesc('remind_at')->get();
+        $reminders = Reminder::where('user_id', Auth::id())->orderByDesc('remind_at')->get();
         return inertia('Reminder/Reminder', [
             'reminders' => $reminders,
         ]);
@@ -26,14 +26,12 @@ class ReminderController extends Controller
      */
     public function create(Request $request)
     {
-            $title = $request->query('title');
-            $url = $request->query('url');
-        return Inertia::render('Reminder/create',[
-            'title' => $title,
-            'url' => $url,
+
+        return Inertia::render('Reminder/create', [
+            'title' => $request->query('title'),
+            'url' => $request->query('url'),
         ]);
     }
-
     /**
      * Store a newly created resource in storage.
      */
@@ -75,13 +73,5 @@ class ReminderController extends Controller
     public function destroy(string $id)
     {
         //
-    }
-
-    public function reminders()
-    {
-        $reminders = Reminder::where('user_id', Auth::id())->orderByDesc('remind_at')->get();
-        return inertia('Reminder/Reminder', [
-            'reminders' => $reminders,
-        ]);
     }
 }

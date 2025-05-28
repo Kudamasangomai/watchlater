@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('avatar')->nullable();
             $table->text('token')->nullable();
             $table->text('refresh_token')->nullable();
-            $table->integer('expires_in')->nullable();
+            $table->dateTime('expires_in')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

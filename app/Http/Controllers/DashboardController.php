@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Reminder;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -17,7 +18,8 @@ class DashboardController extends Controller
 
       
         return Inertia::render('Dashboard', [
-              
+            'reminderCount' =>  Reminder::where('user_id', Auth::id())->count()
+       
         ]);
     }
 }
