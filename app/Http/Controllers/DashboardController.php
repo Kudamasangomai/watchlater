@@ -14,12 +14,9 @@ class DashboardController extends Controller
 {
     public function index()
     {
-      
-
-      
         return Inertia::render('Dashboard', [
             'reminderCount' =>  Reminder::where('user_id', Auth::id())->count()
-       
+
         ]);
     }
 }

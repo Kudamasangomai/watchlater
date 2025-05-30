@@ -6,7 +6,9 @@ use App\Models\Reminder;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Http\Requests\ReminderRequest;
+use App\Http\Requests\UpdateReminderRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class ReminderController extends Controller
 {
@@ -46,32 +48,49 @@ class ReminderController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Reminder $reminder)
     {
-        //
+
+        return Inertia::render('Reminder/ShowReminder',[
+            'reminder' =>  $reminder
+        ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Reminder $reminder)
     {
-        //
+
+        return Inertia::render('Reminder/EditReminder',[
+            'reminder' =>  $reminder
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateReminderRequest $request,Reminder $reminder)
     {
-        //
+         if(Gate::allows('isOwner',$reminder))
+        {
+         $reminder->update($request->validated());
+         redirect()->back();
+        }
+
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Reminder $reminder)
     {
-        //
+
+        if(!Gate::allows('isOwner',$reminder))
+        {
+              abort(403);
+        }
+        $reminder->delete();
+        return Redirect()->back();
     }
 }

@@ -1,13 +1,32 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head, Link, router } from "@inertiajs/vue3";
+import DangerButton from "@/Components/DangerButton.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
+import { Head, Link, useForm} from "@inertiajs/vue3";
+import Modal from "@/Components/Modal.vue";
+import { ref } from "vue";
 
 const props = defineProps({ reminders: Array });
+const confirmingReminderDeletion = ref(false);
+const reminderIdToDelete = ref(null);
+const deleteform = useForm({});
 
-const handleDelete = (id) => {
-    if (confirm("Are you sure you want to delete this reminder?")) {
-        router.delete(`/reminders/${id}`);
-    }
+
+const DeleteReminder = (id) => {
+    reminderIdToDelete.value = id;
+    confirmingReminderDeletion.value = true;
+};
+
+const reminderdelete = () => {
+    if (!reminderIdToDelete.value) return;
+    deleteform.delete(route("reminders.destroy", reminderIdToDelete.value), {
+        preserveScroll: true,
+        onSuccess: () => closeModal(),
+    });
+};
+
+const closeModal = () => {
+    confirmingReminderDeletion.value = false;
 };
 
 </script>
@@ -41,13 +60,13 @@ const handleDelete = (id) => {
                                     <td class="px-6 py-4 whitespace-nowrap">{{ reminder.title }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <a :href="`https://www.youtube.com/watch?v=${reminder.url}`" target="_blank" rel="noopener" class="text-blue-600 underline hover:text-blue-800">{{ reminder.url }}</a>
-                                  
+
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ reminder.remind_at }}</td>
                                     <td class="flex gap-2 px-6 py-4 whitespace-nowrap">
                                         <Link :href="`/reminders/${reminder.id}`" class="px-2 py-1 text-white ">View</Link>
                                         <Link :href="`/reminders/${reminder.id}/edit`" class="px-2 py-1 text-white ">Edit</Link>
-                                        <button @click="handleDelete(reminder.id)" class="px-2 py-1 text-white bg-red-600 rounded hover:bg-red-700">Delete</button>
+                                        <button @click="DeleteReminder(reminder.id)" class="px-2 py-1 text-white bg-red-600 rounded hover:bg-red-700">Delete</button>
                                     </td>
                                 </tr>
                                 <tr v-if="!props.reminders.length">
@@ -59,5 +78,27 @@ const handleDelete = (id) => {
                 </div>
             </div>
         </div>
+         <Modal :show="confirmingReminderDeletion" @close="closeModal">
+            <div class="p-6 mx-7">
+                <h2 class="text-lg font-medium text-black">
+                    Are you sure you want to delete this Reminder?
+                </h2>
+
+                <div class="flex justify-end mt-6">
+                    <SecondaryButton @click="closeModal">
+                        Cancel
+                    </SecondaryButton>
+
+                    <DangerButton
+                        class="ms-3"
+                        :class="{ 'opacity-25': deleteform.processing }"
+                        :disabled="deleteform.processing"
+                        @click="reminderdelete"
+                    >
+                        Delete Reminder
+                    </DangerButton>
+                </div>
+            </div>
+        </Modal>
     </AuthenticatedLayout>
 </template>

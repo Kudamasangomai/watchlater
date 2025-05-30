@@ -15,7 +15,7 @@ class GoogleTokenService
         }
         return $user->token;
     }
-   
+
     public function refreshToken(User $user)
     {
         $response = Http::asForm()->post('https://oauth2.googleapis.com/token', [
@@ -23,20 +23,19 @@ class GoogleTokenService
             'refresh_token' => $user->refresh_token,
             'client_id' => ENV('GOOGLE_CLIENT_ID'),
             'client_secret' => ENV('GOOGLE_CLIENT_SECRET'),
-            
+
         ]);
 
         if ($response->successful()) {
-            $data = $response->json(); // Contains 'access_token', 'expires_in', etc.
-               // Update user tokens in the database
-        $user->update([
-            'token' => $data['access_token'],
-            'expires_in' => now()->addSeconds($data['expires_in']),
-        ]);
-           return $data['access_token'];
-
+            // Contains 'access_token', 'expires_in', etc.
+            $data = $response->json();
+            // Update user tokens in the database
+            $user->update([
+                'token' => $data['access_token'],
+                'expires_in' => now()->addSeconds($data['expires_in']),
+            ]);
+            return $data['access_token'];
         }
         throw new \Exception('Failed to refresh token: ' . $response->body());
-        
     }
 }
