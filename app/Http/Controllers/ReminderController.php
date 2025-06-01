@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Http\Requests\ReminderRequest;
 use App\Http\Requests\UpdateReminderRequest;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
@@ -51,7 +52,7 @@ class ReminderController extends Controller
     public function show(Reminder $reminder)
     {
 
-        return Inertia::render('Reminder/ShowReminder',[
+        return Inertia::render('Reminder/ShowReminder', [
             'reminder' =>  $reminder
         ]);
     }
@@ -62,7 +63,7 @@ class ReminderController extends Controller
     public function edit(Reminder $reminder)
     {
 
-        return Inertia::render('Reminder/EditReminder',[
+        return Inertia::render('Reminder/EditReminder', [
             'reminder' =>  $reminder
         ]);
     }
@@ -70,14 +71,13 @@ class ReminderController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateReminderRequest $request,Reminder $reminder)
+    public function update(UpdateReminderRequest $request, Reminder $reminder)
     {
-         if(Gate::allows('isOwner',$reminder))
-        {
-         $reminder->update($request->validated());
-         redirect()->back();
+        if (Gate::allows('isOwner', $reminder)) {
+            $reminder->update($request->validated());
+            redirect()->back();
         }
-
+        abort(403, 'You are not authorized to Update this reminder.');
     }
 
     /**
@@ -86,11 +86,11 @@ class ReminderController extends Controller
     public function destroy(Reminder $reminder)
     {
 
-        if(!Gate::allows('isOwner',$reminder))
-        {
-              abort(403);
+        if (Gate::allows('isOwner', $reminder)) {
+
+            $reminder->delete();
+            return Redirect()->back();
         }
-        $reminder->delete();
-        return Redirect()->back();
+        abort(403, 'You are not authorized to delete this reminder.');
     }
 }

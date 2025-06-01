@@ -51,7 +51,7 @@ const showingNavigationDropdown = ref(false);
                                       href="/watchlater"
                             
                                 >
-                                WL Videos
+                                WatchLater
                                 </NavLink>
 
            
