@@ -25,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Vite::prefetch(concurrency: 3);
 
-        Gate::define('isOwner', function (User $user,Reminder $reminder) {
+        Gate::define('isOwner', function ($user, $reminder) {
             return $user->id === $reminder->user_id;
         });
     }

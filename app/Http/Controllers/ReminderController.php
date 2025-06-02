@@ -33,6 +33,7 @@ class ReminderController extends Controller
         return Inertia::render('Reminder/create', [
             'title' => $request->query('title'),
             'url' => $request->query('url'),
+            'id' => $request->query('id'),
         ]);
     }
     /**
@@ -42,6 +43,7 @@ class ReminderController extends Controller
     {
         $data = $request->validated();
         $data['user_id'] = $request->user()->id;
+        $data['video_id'] = $request->input('video_id', null);
         Reminder::create($data);
         return redirect()->back();
     }
@@ -51,7 +53,6 @@ class ReminderController extends Controller
      */
     public function show(Reminder $reminder)
     {
-
         return Inertia::render('Reminder/ShowReminder', [
             'reminder' =>  $reminder
         ]);
@@ -75,7 +76,7 @@ class ReminderController extends Controller
     {
         if (Gate::allows('isOwner', $reminder)) {
             $reminder->update($request->validated());
-            redirect()->back();
+           return  redirect()->back();
         }
         abort(403, 'You are not authorized to Update this reminder.');
     }
@@ -87,7 +88,6 @@ class ReminderController extends Controller
     {
 
         if (Gate::allows('isOwner', $reminder)) {
-
             $reminder->delete();
             return Redirect()->back();
         }

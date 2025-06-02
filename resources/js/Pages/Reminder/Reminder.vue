@@ -52,6 +52,7 @@ const closeModal = () => {
                                     <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Title</th>
                                     <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">URL</th>
                                     <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Remind At</th>
+                                    <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Status</th>
                                     <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Actions</th>
                                 </tr>
                             </thead>
@@ -60,9 +61,9 @@ const closeModal = () => {
                                     <td class="px-6 py-4 whitespace-nowrap">{{ reminder.title }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <a :href="`https://www.youtube.com/watch?v=${reminder.url}`" target="_blank" rel="noopener" class="text-blue-600 underline hover:text-blue-800">{{ reminder.url }}</a>
-
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ reminder.remind_at }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap capitalize">{{ reminder.status ? 'Not Yet Watched' : reminder.status }}</td>
                                     <td class="flex gap-2 px-6 py-4 whitespace-nowrap">
                                         <Link :href="`/reminders/${reminder.id}`" class="px-2 py-1 text-white ">View</Link>
                                         <Link :href="`/reminders/${reminder.id}/edit`" class="px-2 py-1 text-white ">Edit</Link>
@@ -70,7 +71,7 @@ const closeModal = () => {
                                     </td>
                                 </tr>
                                 <tr v-if="!props.reminders.length">
-                                    <td colspan="4" class="py-4 text-center text-gray-500">No reminders found.</td>
+                                    <td colspan="5" class="py-4 text-center text-gray-500">No reminders found.</td>
                                 </tr>
                             </tbody>
                         </table>

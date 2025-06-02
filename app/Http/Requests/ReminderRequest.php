@@ -14,11 +14,11 @@ class ReminderRequest extends FormRequest
     public function rules()
     {
         return [
-            // 'video_id' => 'required|string',
+            // 'id' => 'required|string',
             'title' => 'required|string',
             'url' => 'required|string |unique:reminders,url',// could have added uniqque in db just lazy
             'remind_at' => ['required', 'date', 'after:now'],
-         
+
         ];
     }
 

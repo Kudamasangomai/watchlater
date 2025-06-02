@@ -3,12 +3,13 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, Link ,useForm } from "@inertiajs/vue3";
 import { ref, watch } from "vue";
 
-const props = defineProps([ 'title', 'url'])
+const props = defineProps([ 'title', 'url','id'])
 
 const form = useForm({
 
   title: props.title || '',
   url: props.url || '',
+  video_id: props.id || '',
   remind_at: '', // user selects this
 })
 
@@ -74,6 +75,17 @@ watch(() => form.isSuccess, (val) => {
                                         class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     />
                                     <div v-if="form.errors.url" class="mt-1 text-sm text-red-500">{{ form.errors.url }}</div>
+                                </div>
+                                 <div class="mb-4">
+                                   <input
+                                        v-model="form.video_id"
+                                        type="text"
+                                        placeholder="Video URL"
+                                        readonly
+                                        hidden
+                                        class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    />
+                                    <div v-if="form.errors.id" class="mt-1 text-sm text-red-500">{{ form.errors.id }}</div>
                                 </div>
                                 <div class="mb-4">
                                     <label class="block mb-1 font-medium text-gray-700 dark:text-gray-300">Remind At</label>
