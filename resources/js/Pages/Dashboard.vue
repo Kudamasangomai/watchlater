@@ -5,7 +5,7 @@ import { ref, computed } from "vue";
 
 const props = defineProps({
 
-    reminders: Array // Add reminders prop for dashboard stats and calendar
+    reminderCount: Number
 });
 
 
@@ -17,7 +17,7 @@ const props = defineProps({
         <template #header>
             <div class="flex items-center justify-between">
                 <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                    Dashboard
+                    Dashboard {{ reminderCount }}
                 </h2>
             </div>
         </template>
@@ -29,30 +29,30 @@ const props = defineProps({
                             <div class="p-4 text-center bg-blue-600 rounded ">
                                 <div class="text-gray-700 dark:text-gray-300">Total Reminders</div>
                                 <div class="text-2xl font-bold">4</div>
-                                
+
                             </div>
                             <div class="p-4 text-center bg-green-600 rounded ">
                                 <div class="text-gray-700 dark:text-gray-300">Reminders This Week</div>
                                 <div class="text-2xl font-bold">7</div>
-                                
+
                             </div>
                             <div class="p-4 text-center bg-red-600 rounded ">
                                 <div class="text-gray-700 dark:text-gray-300">Overdue Reminders</div>
                                 <div class="text-2xl font-bold">8</div>
-                                
+
                             </div>
 
                                             <div class="p-4 text-center bg-indigo-600 rounded">
                                 <div class="text-gray-700 dark:text-gray-300">watched Videos</div>
                                 <div class="text-2xl font-bold">5</div>
-                                
+
                             </div>
 
 
-                            
-                      
+
+
                         </div>
-                   
+
                     </div>
                 </div>
             </div>
