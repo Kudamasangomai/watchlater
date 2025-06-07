@@ -65,7 +65,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Africa/Harare', // or your correct region
 
     /*
     |--------------------------------------------------------------------------
