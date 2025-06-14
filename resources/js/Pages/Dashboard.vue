@@ -17,7 +17,7 @@ const props = defineProps({
         <template #header>
             <div class="flex items-center justify-between">
                 <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                    Dashboard {{ reminderCount }}
+                    Dashboard
                 </h2>
             </div>
         </template>
@@ -28,7 +28,7 @@ const props = defineProps({
                         <div class="grid grid-cols-1 gap-6 mb-8 md:grid-cols-4">
                             <div class="p-4 text-center bg-blue-600 rounded ">
                                 <div class="text-gray-700 dark:text-gray-300">Total Reminders</div>
-                                <div class="text-2xl font-bold">4</div>
+                                <div class="text-2xl font-bold">{{ reminderCount }}</div>
 
                             </div>
                             <div class="p-4 text-center bg-green-600 rounded ">

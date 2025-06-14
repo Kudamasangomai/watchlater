@@ -41,7 +41,7 @@ class SendReminders extends Command
 
 
         /**
-         * Get all reminders that: Have not been sent yet.
+         * Get all reminders that: Have not been sent yet and
          * Have a remind_at time that falls within the last 2 minutes
          * Eager loads the user relationship (for access to email).
          */
@@ -49,7 +49,7 @@ class SendReminders extends Command
              ->whereBetween('remind_at', [$windowStart, $now])
             ->with('user')
             ->get();
-  
+
         foreach ($reminders as $reminder) {
             Mail::to($reminder->user->email)->send(new ReminderEmail($reminder));
             $reminder->sent_at = $now;

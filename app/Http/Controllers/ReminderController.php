@@ -78,7 +78,7 @@ class ReminderController extends Controller
             $reminder->update($request->validated());
            return  redirect()->back();
         }
-        abort(403, 'You are not authorized to Update this reminder.');
+       abort(403, 'You are not authorized to perform this Action.');
     }
 
     /**
@@ -91,6 +91,6 @@ class ReminderController extends Controller
             $reminder->delete();
             return Redirect()->back();
         }
-        abort(403, 'You are not authorized to delete this reminder.');
+        abort(403, 'You are not authorized to perform this Action.');
     }
 }

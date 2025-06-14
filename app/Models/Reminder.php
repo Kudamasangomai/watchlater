@@ -6,9 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Reminder extends Model
 {
-        protected $fillable = ['video_id', 'title', 'url', 'remind_at', 'user_id'];
-
-
+    protected $fillable = [
+        'video_id',
+        'title',
+        'url',
+        'remind_at',
+        'user_id'
+    ];
 
     public function user()
     {

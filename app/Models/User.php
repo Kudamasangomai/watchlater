@@ -22,8 +22,6 @@ class User extends Authenticatable
         'email',
         'password',
         'social_id',
-        'social_type',
-        'provider_name',
         'avatar',
         'token',
         'refresh_token',
@@ -58,5 +56,5 @@ class User extends Authenticatable
         return $this->hasMany(Reminder::class);
     }
 
-    
+
 }
