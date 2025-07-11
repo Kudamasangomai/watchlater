@@ -35,7 +35,8 @@ class SendReminders extends Command
 
         /**
          * Makes a copy of the current time, then subtracts 2 minutes.
-         * So if now is 12:00, then windowStart is 11:58
+         * So if now is 12:00, then windowStart is 11:58.
+         * change time to what suits your needs.
          */
         $windowStart = $now->copy()->subMinutes(5);
 

@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redirect;
 use GuzzleHttp\Exception\RequestException;
 
+use function Laravel\Prompts\error;
+
 class WatchLaterVideosController extends Controller
 {
 
@@ -57,10 +59,12 @@ class WatchLaterVideosController extends Controller
             ]);
         } catch (\Throwable $e) {
 
+
             return Inertia::render('WatchLater', [
                 'youtubeData' => [],
                 'flash' => [
                     'error' => 'Unable to load WatchLater videos: Please check your Internet '
+                    . $e->getMessage(),
                 ],
             ]);
         };
