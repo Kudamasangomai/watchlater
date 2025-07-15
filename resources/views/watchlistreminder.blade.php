@@ -10,7 +10,7 @@ Your reminder to watch this video:
 </x-mail::button>
 
 If you're not ready to watch the video,
-you can log in change your reminder.
+you can log in and change your reminder.
 
 <x-mail::button :url="$editReminderid">
 ✏️ Edit Reminder

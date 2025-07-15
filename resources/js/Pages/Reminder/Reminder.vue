@@ -46,14 +46,16 @@ const closeModal = () => {
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
                     <div class="p-6 text-gray-900 dark:text-gray-100">
-                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-center">
                             <thead>
-                                <tr>
-                                    <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Title</th>
-                                    <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">URL</th>
-                                    <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Remind At</th>
-                                    <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Status</th>
-                                    <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Actions</th>
+                                <tr class="text-center">
+                                    <th class="px-6 py-3 text-xs font-medium tracking-wider  text-gray-500 uppercase ">Title</th>
+                                    <th class="px-6 py-3 text-xs font-medium tracking-wider  text-gray-500 uppercase">URL</th>
+                                    <th class="px-6 py-3 text-xs font-medium tracking-wider  text-gray-500 uppercase">Remind At</th>
+                                                                        <th class="px-6 py-3 text-xs font-medium tracking-wider text-gray-500 uppercase">Reminder Sent?</th>
+                                    <!-- <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Status</th> -->
+
+                                   <th class="px-6 py-3 text-xs font-medium tracking-wider  text-gray-500 uppercase">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -63,7 +65,8 @@ const closeModal = () => {
                                         <a :href="`https://www.youtube.com/watch?v=${reminder.url}`" target="_blank" rel="noopener" class="text-blue-600 underline hover:text-blue-800">{{ reminder.url }}</a>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ reminder.remind_at }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap capitalize">{{ reminder.status ? 'Not Yet Watched' : reminder.status }}</td>
+                                      <td class="px-6 py-4 whitespace-nowrap">{{ reminder.sent_at ? 'Yes' : 'No' }}</td>
+                                    <!-- <td class="px-6 py-4 whitespace-nowrap capitalize">{{ reminder.status ? 'Not Yet Watched' : reminder.status }}</td> -->
                                     <td class="flex gap-2 px-6 py-4 whitespace-nowrap">
                                         <Link :href="`/reminders/${reminder.id}`" class="px-2 py-1 text-white ">View</Link>
                                         <Link :href="`/reminders/${reminder.id}/edit`" class="px-2 py-1 text-white ">Edit</Link>

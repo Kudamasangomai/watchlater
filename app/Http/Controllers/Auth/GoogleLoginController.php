@@ -21,6 +21,7 @@ class GoogleLoginController extends Controller
         return Socialite::driver('google')
             ->scopes(['openid','profile','email',
                 'https://www.googleapis.com/auth/youtube',
+                'https://www.googleapis.com/auth/calendar',
             ])->with([
                 'access_type' => 'offline',  // to get refresh token
                  'prompt' => 'consent', ])

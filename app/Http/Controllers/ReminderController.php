@@ -35,6 +35,8 @@ class ReminderController extends Controller
             'url' => $request->query('url'),
             'id' => $request->query('id'),
         ]);
+
+     
     }
     /**
      * Store a newly created resource in storage.
@@ -76,9 +78,9 @@ class ReminderController extends Controller
     {
         if (Gate::allows('isOwner', $reminder)) {
             $reminder->update($request->validated());
-           return  redirect()->back();
+            return  redirect()->back();
         }
-       abort(403, 'You are not authorized to perform this Action.');
+        abort(403, 'You are not authorized to perform this Action.');
     }
 
     /**
