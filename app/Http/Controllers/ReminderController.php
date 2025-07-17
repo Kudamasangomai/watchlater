@@ -10,6 +10,7 @@ use App\Http\Requests\UpdateReminderRequest;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use App\Services\GoogleCalendarService; // Import the GoogleCalendarService
 
 class ReminderController extends Controller
 {
@@ -35,18 +36,32 @@ class ReminderController extends Controller
             'url' => $request->query('url'),
             'id' => $request->query('id'),
         ]);
-
-     
     }
     /**
      * Store a newly created resource in storage.
      */
     public function store(ReminderRequest $request)
     {
+
+
         $data = $request->validated();
         $data['user_id'] = $request->user()->id;
         $data['video_id'] = $request->input('video_id', null);
-        Reminder::create($data);
+        $reminder = Reminder::create($data);
+
+        // Get the user's Google access token.
+        $accessToken = $request->user()->token;
+
+        // If the user has connected their Google account
+        if ($accessToken) {
+
+            // Create an instance of the GoogleCalendarService with the access token
+            $calendarService = new GoogleCalendarService($accessToken);
+
+            // Add the reminder to Google Calendar
+            $calendarService->createEvent($reminder);
+        }
+
         return redirect()->back();
     }
 
