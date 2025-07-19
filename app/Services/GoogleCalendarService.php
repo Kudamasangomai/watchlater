@@ -28,18 +28,18 @@ class GoogleCalendarService
     // This function creates an event in Google Calendar using the reminder details
     public function createEvent($reminder)
     {
-        // $youtube_baseurl = 'https://www.youtube.com/watch?v=';
+        $youtube_baseurl = 'https://www.youtube.com/watch?v=';
 
         // Convert the reminder time to the format google calendar expects
-        $startDateTime = Carbon::parse($reminder->reminder_time)->toIso8601String();
+        $startDateTime = Carbon::parse($reminder->remind_at)->toIso8601String();
 
         // Set the event to last 20 minutes
-        $endDateTime = Carbon::parse($reminder->reminder_time)->addMinutes(20)->toIso8601String();
+        $endDateTime = Carbon::parse($reminder->remind_at)->addMinutes(20)->toIso8601String();
 
-        // Prepare the event details for Google Calendar
+
         $event = [
             'summary' => 'WatchLater: ' . $reminder->title,
-            'description' => 'Video URL: ' . ENV('YOUTUBE_BASEURL').$reminder->url,
+            'description' => 'Video URL: ' . ENV('YOUTUBE_BASEURL') . $reminder->url,
 
             // When the event starts and ends
             'start' => [
@@ -54,7 +54,7 @@ class GoogleCalendarService
             'reminders' => [
                 'useDefault' => false,
                 'overrides' => [
-                     // Popup 5 minutes before
+                    // Popup 5 minutes before
                     ['method' => 'popup', 'minutes' => 5],
                     ['method' => 'email', 'minutes' => 30],
                 ],
@@ -62,10 +62,9 @@ class GoogleCalendarService
         ];
 
         try {
-            // Send the event to Google Calendar
             $response = $this->client->post('calendars/primary/events', [
                 'headers' => [
-                    'Authorization' => 'Bearer ' . $this->accessToken, // Use your access token
+                    'Authorization' => 'Bearer ' . $this->accessToken,
                     'Accept' => 'application/json',
                     'Content-Type' => 'application/json',
                 ],
@@ -73,18 +72,38 @@ class GoogleCalendarService
             ]);
 
             $data = json_decode($response->getBody(), true);
-
-            // save event ID from Google for later update/delete
-            // return $data['id'] ?? null;
-
-            $reminder->google_event_id = $data['id'] ?? null;
+            // dd($data);
+            $reminder->google_event_id = $data['id'] ? $data['id'] : null;
             $reminder->save();
-
         } catch (\Exception $e) {
 
-            Log::error('Google Calendar Event Creation Failed: ' . $e->getMessage());
+            // Log::error('Google Calendar Event Creation Failed: ' . $e->getMessage());
             return null;
         }
     }
 
+
+    public function deleteEvent($google_event_id)
+    {
+
+        try {
+            $this->client->delete("calendars/primary/events/{$google_event_id}", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->accessToken,
+                    'Accept' => 'application/json',
+                ],
+            ]);
+            return true;
+        } catch (\Exception $e) {
+            $code = $e->getCode();
+            // If it's a 404, the event doesn't exist in Google Calendar anymore
+            if (in_array($code, [404, 410])) {
+                Log::warning("Google Calendar event already deleted: {$google_event_id}");
+                return true; // Treat as success so we can delete locally
+            }
+
+            Log::error('Google Calendar delete failed: ' . $e->getMessage());
+            return false;
+        }
+    }
 }

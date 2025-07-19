@@ -17,8 +17,7 @@ use Illuminate\Support\Facades\Log;
 class ReminderController extends Controller
 {
 
-    protected $client;
-    protected $accessToken;
+
     /**
      * Display a listing of the resource.
      */
@@ -44,27 +43,25 @@ class ReminderController extends Controller
     }
     /**
      * Store a newly created resource in storage.
-     * Get the user's Google access token. if the
-     * user has connected their Google account then
-     * Create an instance of the GoogleCalendarService
-     * with the access token and add the reminder to
-     * Google Calendar
      */
     public function store(ReminderRequest $request)
     {
-
 
         $data = $request->validated();
         $data['user_id'] = $request->user()->id;
         $data['video_id'] = $request->input('video_id', null);
         $reminder = Reminder::create($data);
 
-
+        // Get the user's Google access token
         $accessToken = $request->user()->token;
 
+        // if the user has connected their Google account
         if ($accessToken) {
 
+            // Create an instance of the GoogleCalendarService
             $calendarService = new GoogleCalendarService($accessToken);
+
+            // add  the reminder to Google Calendar
             $calendarService->createEvent($reminder);
         }
 
@@ -107,33 +104,39 @@ class ReminderController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Reminder $reminder)
+    public function destroy(Request $request, Reminder $reminder)
     {
-
-           $this->client = new Client([
-            'base_uri' => 'https://www.googleapis.com/calendar/v3/',
-        ]);
+        $accessToken = $request->user()->token;
+        $errmsg = "An error occurred while deleting from Google Calendar. Reminder was not deleted.";
 
         if (Gate::allows('isOwner', $reminder)) {
 
-            // Step 1: Delete from Google Calendar
+            /**
+             * if google event id exsists in db delete it from google calender
+             */
             if ($reminder->google_event_id) {
+
                 try {
-                    $this->client->delete("calendars/primary/events/{$reminder->google_event_id}", [
-                        'headers' => [
-                            'Authorization' => 'Bearer ' . $this->accessToken,
-                            'Accept' => 'application/json',
-                        ],
-                    ]);
+
+                    $calendarService = new GoogleCalendarService($accessToken);
+                    $eventdeleted = $calendarService->deleteEvent($reminder->google_event_id);
+
+                    if ($eventdeleted) {
+                        $reminder->delete();
+                        return redirect()->back()->with('success', 'Reminder deleted successfully.');
+                    }
+                    return redirect()->back()->with('error', $errmsg);
+
                 } catch (\Exception $e) {
-                    // Log::error('Failed to delete Google Calendar event: ' . $e->getMessage());
-                    return response()->json(['success' => false, 'error' => $e->getMessage()]);
+
+                    Log::error('Failed to delete Google Calendar event: ' . $e->getMessage());
+                    return redirect()->back()->with('error', $errmsg);
                 }
             }
 
-
+            // Delete the reminder from DB
             $reminder->delete();
-            return Redirect()->back();
+            return redirect()->back();
         }
         abort(403, 'You are not authorized to perform this Action.');
     }
