@@ -56,7 +56,7 @@ class GoogleCalendarService
                 'overrides' => [
                     // Popup 5 minutes before
                     ['method' => 'popup', 'minutes' => 5],
-                    ['method' => 'email', 'minutes' => 30],
+                    ['method' => 'email', 'minutes' => 20],
                 ],
             ],
         ];
@@ -72,16 +72,22 @@ class GoogleCalendarService
             ]);
 
             $data = json_decode($response->getBody(), true);
-            // dd($data);
             $reminder->google_event_id = $data['id'] ? $data['id'] : null;
             $reminder->save();
+
         } catch (\Exception $e) {
 
-            // Log::error('Google Calendar Event Creation Failed: ' . $e->getMessage());
+            Log::error('Google Calendar Event Creation Failed: ' . $e->getMessage());
             return null;
         }
     }
 
+    /**
+     *  Deletes the Event id from google calender .
+     *  If event was deleted via google it will also  be
+     *  treated as success so we can delete locally
+     *
+     */
 
     public function deleteEvent($google_event_id)
     {
@@ -93,13 +99,17 @@ class GoogleCalendarService
                     'Accept' => 'application/json',
                 ],
             ]);
+
             return true;
+
         } catch (\Exception $e) {
+
             $code = $e->getCode();
-            // If it's a 404, the event doesn't exist in Google Calendar anymore
+            // If it's a 404 the event id doesn't exist in Google Calendar anymore
             if (in_array($code, [404, 410])) {
+
                 Log::warning("Google Calendar event already deleted: {$google_event_id}");
-                return true; // Treat as success so we can delete locally
+                return true;
             }
 
             Log::error('Google Calendar delete failed: ' . $e->getMessage());

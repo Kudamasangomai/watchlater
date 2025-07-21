@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Http\Requests\ReminderRequest;
 use App\Http\Requests\UpdateReminderRequest;
+use App\Jobs\DeleteEventFromGoogle;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -65,7 +66,9 @@ class ReminderController extends Controller
             $calendarService->createEvent($reminder);
         }
 
-        return redirect()->back();
+        // return redirect()->back();
+        return redirect()->route('reminders.show', $reminder->id)
+            ->with('success', 'Reminder Created Successfully');
     }
 
     /**
@@ -111,10 +114,11 @@ class ReminderController extends Controller
 
         if (Gate::allows('isOwner', $reminder)) {
 
-            /**
-             * if google event id exsists in db delete it from google calender
-             */
+            // if google event id exsists in db delete it from google calender
             if ($reminder->google_event_id) {
+
+                // for future use
+                //DeleteGoogleCalanderEvent::dispatch($reminder->google_event_id, $accessToken);
 
                 try {
 
@@ -126,7 +130,6 @@ class ReminderController extends Controller
                         return redirect()->back()->with('success', 'Reminder deleted successfully.');
                     }
                     return redirect()->back()->with('error', $errmsg);
-
                 } catch (\Exception $e) {
 
                     Log::error('Failed to delete Google Calendar event: ' . $e->getMessage());
